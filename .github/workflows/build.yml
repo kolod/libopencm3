@@ -57,6 +57,17 @@ jobs:
         make -j$(nproc) lib
         echo "Library build completed successfully"
     
+    - name: Upload library artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: libopencm3-libraries
+        path: |
+          lib/**/*.a
+          lib/**/*.ld
+          include/
+        retention-days: 30
+        compression-level: 6
+    
     - name: Run basic tests
       run: |
         echo "Running basic validation..."
