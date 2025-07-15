@@ -46,7 +46,7 @@ jobs:
     
     - name: Run script tests
       run: |
-        cd tests
+        cd tests/test_lpcvtcksum
         python run_all_tests.py
 
   test-script-compatibility:
@@ -72,7 +72,7 @@ jobs:
     - name: Test lpcvtcksum cross-platform
       shell: bash
       run: |
-        cd tests
+        cd tests/test_lpcvtcksum
         python run_all_tests.py
         
         # Additional cross-platform verification
