@@ -97,8 +97,8 @@ jobs:
         echo "Checking LPC libraries..."
         test -f lib/libopencm3_lpc13xx.a && echo "✅ LPC13XX library built" || { echo "❌ LPC13XX library missing"; failed_tests=$((failed_tests + 1)); }
         test -f lib/libopencm3_lpc17xx.a && echo "✅ LPC17XX library built" || { echo "❌ LPC17XX library missing"; failed_tests=$((failed_tests + 1)); }
-        test -f lib/libopencm3_lpc43xx.a && echo "✅ LPC43XX M0 library built" || { echo "❌ LPC43XX M0 library missing"; failed_tests=$((failed_tests + 1)); }
-        test -f lib/libopencm3_lpc43xx_m4.a && echo "✅ LPC43XX M4 library built" || { echo "❌ LPC43XX M4 library missing"; failed_tests=$((failed_tests + 1)); }
+        test -f lib/libopencm3_lpc43xx_m0.a && echo "✅ LPC43XX M0 library built" || { echo "❌ LPC43XX M0 library missing"; failed_tests=$((failed_tests + 1)); }
+        test -f lib/libopencm3_lpc43xx.a && echo "✅ LPC43XX M4 library built" || { echo "❌ LPC43XX M4 library missing"; failed_tests=$((failed_tests + 1)); }
 
         echo "Checking NXP Kinetis libraries..."
         test -f lib/libopencm3_lm3s.a && echo "✅ LM3S library built" || { echo "❌ LM3S library missing"; failed_tests=$((failed_tests + 1)); }
