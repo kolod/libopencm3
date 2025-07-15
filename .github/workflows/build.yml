@@ -49,7 +49,6 @@ jobs:
         arm-none-eabi-gcc --version
         arm-none-eabi-objcopy --version
         doxygen --version
-        dot --version
         python3 --version
     
     - name: Build libopencm3 libraries
