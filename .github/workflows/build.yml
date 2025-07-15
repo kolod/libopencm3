@@ -78,62 +78,74 @@ jobs:
         # Track test results
         failed_tests=0
         
+        # Helper function to test library existence
+        test_library() {
+          local lib_file="$1"
+          local lib_name="$2"
+          if test -f "$lib_file"; then
+            echo "✅ $lib_name library built"
+          else
+            echo "❌ $lib_name library missing"
+            failed_tests=$((failed_tests + 1))
+          fi
+        }
+        
         # Check that key libraries were built successfully
         echo "Checking STM32 libraries..."
-        test -f lib/libopencm3_stm32f0.a && echo "✅ STM32F0 library built" || { echo "❌ STM32F0 library missing"; failed_tests=$((failed_tests + 1)); }
-        test -f lib/libopencm3_stm32f1.a && echo "✅ STM32F1 library built" || { echo "❌ STM32F1 library missing"; failed_tests=$((failed_tests + 1)); }
-        test -f lib/libopencm3_stm32f2.a && echo "✅ STM32F2 library built" || { echo "❌ STM32F2 library missing"; failed_tests=$((failed_tests + 1)); }
-        test -f lib/libopencm3_stm32f3.a && echo "✅ STM32F3 library built" || { echo "❌ STM32F3 library missing"; failed_tests=$((failed_tests + 1)); }
-        test -f lib/libopencm3_stm32f4.a && echo "✅ STM32F4 library built" || { echo "❌ STM32F4 library missing"; failed_tests=$((failed_tests + 1)); }
-        test -f lib/libopencm3_stm32f7.a && echo "✅ STM32F7 library built" || { echo "❌ STM32F7 library missing"; failed_tests=$((failed_tests + 1)); }
-        test -f lib/libopencm3_stm32l0.a && echo "✅ STM32L0 library built" || { echo "❌ STM32L0 library missing"; failed_tests=$((failed_tests + 1)); }
-        test -f lib/libopencm3_stm32l1.a && echo "✅ STM32L1 library built" || { echo "❌ STM32L1 library missing"; failed_tests=$((failed_tests + 1)); }
-        test -f lib/libopencm3_stm32l4.a && echo "✅ STM32L4 library built" || { echo "❌ STM32L4 library missing"; failed_tests=$((failed_tests + 1)); }
-        test -f lib/libopencm3_stm32g0.a && echo "✅ STM32G0 library built" || { echo "❌ STM32G0 library missing"; failed_tests=$((failed_tests + 1)); }
-        test -f lib/libopencm3_stm32g4.a && echo "✅ STM32G4 library built" || { echo "❌ STM32G4 library missing"; failed_tests=$((failed_tests + 1)); }
-        test -f lib/libopencm3_stm32h7.a && echo "✅ STM32H7 library built" || { echo "❌ STM32H7 library missing"; failed_tests=$((failed_tests + 1)); }
-        test -f lib/libopencm3_stm32u5.a && echo "✅ STM32U5 library built" || { echo "❌ STM32U5 library missing"; failed_tests=$((failed_tests + 1)); }
+        test_library "lib/libopencm3_stm32f0.a" "STM32F0"
+        test_library "lib/libopencm3_stm32f1.a" "STM32F1"
+        test_library "lib/libopencm3_stm32f2.a" "STM32F2"
+        test_library "lib/libopencm3_stm32f3.a" "STM32F3"
+        test_library "lib/libopencm3_stm32f4.a" "STM32F4"
+        test_library "lib/libopencm3_stm32f7.a" "STM32F7"
+        test_library "lib/libopencm3_stm32l0.a" "STM32L0"
+        test_library "lib/libopencm3_stm32l1.a" "STM32L1"
+        test_library "lib/libopencm3_stm32l4.a" "STM32L4"
+        test_library "lib/libopencm3_stm32g0.a" "STM32G0"
+        test_library "lib/libopencm3_stm32g4.a" "STM32G4"
+        test_library "lib/libopencm3_stm32h7.a" "STM32H7"
+        test_library "lib/libopencm3_stm32u5.a" "STM32U5"
         
         echo "Checking LPC libraries..."
-        test -f lib/libopencm3_lpc13xx.a && echo "✅ LPC13XX library built" || { echo "❌ LPC13XX library missing"; failed_tests=$((failed_tests + 1)); }
-        test -f lib/libopencm3_lpc17xx.a && echo "✅ LPC17XX library built" || { echo "❌ LPC17XX library missing"; failed_tests=$((failed_tests + 1)); }
-        test -f lib/libopencm3_lpc43xx_m0.a && echo "✅ LPC43XX M0 library built" || { echo "❌ LPC43XX M0 library missing"; failed_tests=$((failed_tests + 1)); }
-        test -f lib/libopencm3_lpc43xx.a && echo "✅ LPC43XX M4 library built" || { echo "❌ LPC43XX M4 library missing"; failed_tests=$((failed_tests + 1)); }
+        test_library "lib/libopencm3_lpc13xx.a" "LPC13XX"
+        test_library "lib/libopencm3_lpc17xx.a" "LPC17XX"
+        test_library "lib/libopencm3_lpc43xx_m0.a" "LPC43XX M0"
+        test_library "lib/libopencm3_lpc43xx.a" "LPC43XX M4"
 
         echo "Checking NXP Kinetis libraries..."
-        test -f lib/libopencm3_lm3s.a && echo "✅ LM3S library built" || { echo "❌ LM3S library missing"; failed_tests=$((failed_tests + 1)); }
-        test -f lib/libopencm3_lm4f.a && echo "✅ LM4F library built" || { echo "❌ LM4F library missing"; failed_tests=$((failed_tests + 1)); }
+        test_library "lib/libopencm3_lm3s.a" "LM3S"
+        test_library "lib/libopencm3_lm4f.a" "LM4F"
 
         echo "Checking MSP432 libraries..."
-        test -f lib/libopencm3_msp432e4.a && echo "✅ MSP432E4 library built" || { echo "❌ MSP432E4 library missing"; failed_tests=$((failed_tests + 1)); }
+        test_library "lib/libopencm3_msp432e4.a" "MSP432E4"
         
         echo "Checking EFM32 libraries..."
-        test -f lib/libopencm3_efm32tg.a && echo "✅ EFM32TG library built" || { echo "❌ EFM32TG library missing"; failed_tests=$((failed_tests + 1)); }
-        test -f lib/libopencm3_efm32g.a && echo "✅ EFM32G library built" || { echo "❌ EFM32G library missing"; failed_tests=$((failed_tests + 1)); }
-        test -f lib/libopencm3_efm32lg.a && echo "✅ EFM32LG library built" || { echo "❌ EFM32LG library missing"; failed_tests=$((failed_tests + 1)); }
-        test -f lib/libopencm3_efm32gg.a && echo "✅ EFM32GG library built" || { echo "❌ EFM32GG library missing"; failed_tests=$((failed_tests + 1)); }
-        test -f lib/libopencm3_efm32hg.a && echo "✅ EFM32HG library built" || { echo "❌ EFM32HG library missing"; failed_tests=$((failed_tests + 1)); }
-        test -f lib/libopencm3_efm32wg.a && echo "✅ EFM32WG library built" || { echo "❌ EFM32WG library missing"; failed_tests=$((failed_tests + 1)); }
-        test -f lib/libopencm3_ezr32wg.a && echo "✅ EFM32EZR32WG library built" || { echo "❌ EFM32EZR32WG library missing"; failed_tests=$((failed_tests + 1)); }
+        test_library "lib/libopencm3_efm32tg.a" "EFM32TG"
+        test_library "lib/libopencm3_efm32g.a" "EFM32G"
+        test_library "lib/libopencm3_efm32lg.a" "EFM32LG"
+        test_library "lib/libopencm3_efm32gg.a" "EFM32GG"
+        test_library "lib/libopencm3_efm32hg.a" "EFM32HG"
+        test_library "lib/libopencm3_efm32wg.a" "EFM32WG"
+        test_library "lib/libopencm3_ezr32wg.a" "EFM32EZR32WG"
         
         echo "Checking Nordic libraries..."
-        test -f lib/libopencm3_nrf51.a && echo "✅ NRF51 library built" || { echo "❌ NRF51 library missing"; failed_tests=$((failed_tests + 1)); }
-        test -f lib/libopencm3_nrf52.a && echo "✅ NRF52 library built" || { echo "❌ NRF52 library missing"; failed_tests=$((failed_tests + 1)); }
+        test_library "lib/libopencm3_nrf51.a" "NRF51"
+        test_library "lib/libopencm3_nrf52.a" "NRF52"
 
         echo "Checking Atmel SAM libraries..."
-        test -f lib/libopencm3_sam3a.a && echo "✅ SAM3A library built" || { echo "❌ SAM3A library missing"; failed_tests=$((failed_tests + 1)); }
-        test -f lib/libopencm3_sam3n.a && echo "✅ SAM3N library built" || { echo "❌ SAM3N library missing"; failed_tests=$((failed_tests + 1)); }
-        test -f lib/libopencm3_sam3s.a && echo "✅ SAM3S library built" || { echo "❌ SAM3S library missing"; failed_tests=$((failed_tests + 1)); }
-        test -f lib/libopencm3_sam3u.a && echo "✅ SAM3U library built" || { echo "❌ SAM3U library missing"; failed_tests=$((failed_tests + 1)); }
-        test -f lib/libopencm3_sam3x.a && echo "✅ SAM3X library built" || { echo "❌ SAM3X library missing"; failed_tests=$((failed_tests + 1)); }
-        test -f lib/libopencm3_sam4l.a && echo "✅ SAM4L library built" || { echo "❌ SAM4L library missing"; failed_tests=$((failed_tests + 1)); }
-        test -f lib/libopencm3_samd.a && echo "✅ SAMD library built" || { echo "❌ SAMD library missing"; failed_tests=$((failed_tests + 1)); }
+        test_library "lib/libopencm3_sam3a.a" "SAM3A"
+        test_library "lib/libopencm3_sam3n.a" "SAM3N"
+        test_library "lib/libopencm3_sam3s.a" "SAM3S"
+        test_library "lib/libopencm3_sam3u.a" "SAM3U"
+        test_library "lib/libopencm3_sam3x.a" "SAM3X"
+        test_library "lib/libopencm3_sam4l.a" "SAM4L"
+        test_library "lib/libopencm3_samd.a" "SAMD"
         
         echo "Checking other libraries..."
-        test -f lib/libopencm3_vf6xx.a && echo "✅ VF6XX library built" || { echo "❌ VF6XX library missing"; failed_tests=$((failed_tests + 1)); }
-        test -f lib/libopencm3_swm050.a && echo "✅ SWM050 library built" || { echo "❌ SWM050 library missing"; failed_tests=$((failed_tests + 1)); }
-        test -f lib/libopencm3_pac55xx.a && echo "✅ PAC55XX library built" || { echo "❌ PAC55XX library missing"; failed_tests=$((failed_tests + 1)); }
-        test -f lib/libopencm3_gd32f1x0.a && echo "✅ GD32F1x0 library built" || { echo "❌ GD32F1x0 library missing"; failed_tests=$((failed_tests + 1)); }
+        test_library "lib/libopencm3_vf6xx.a" "VF6XX"
+        test_library "lib/libopencm3_swm050.a" "SWM050"
+        test_library "lib/libopencm3_pac55xx.a" "PAC55XX"
+        test_library "lib/libopencm3_gd32f1x0.a" "GD32F1x0"
         
         # Report final results
         if [ $failed_tests -eq 0 ]; then
@@ -234,6 +246,18 @@ jobs:
         echo "  JS files:   $(find . -name "*.js" | wc -l)"
         echo "  Image files: $(find . -name "*.png" -o -name "*.gif" -o -name "*.svg" -o -name "*.jpg" | wc -l)"
         echo "  Total size: $(du -sh . | cut -f1)"
+    
+    - name: Deduplicate documentation files
+      run: |
+        echo "Deduplicating documentation files..."
+        python3 scripts/deduplicate_docs.py deploy/
+        
+        echo "Post-deduplication statistics:"
+        echo "  HTML files: $(find deploy/ -name "*.html" | wc -l)"
+        echo "  CSS files:  $(find deploy/ -name "*.css" | wc -l)"
+        echo "  JS files:   $(find deploy/ -name "*.js" | wc -l)"
+        echo "  Image files: $(find deploy/ -name "*.png" -o -name "*.gif" -o -name "*.svg" -o -name "*.jpg" | wc -l)"
+        echo "  Total size: $(du -sh deploy/ | cut -f1)"
    
     - name: Upload documentation artifact
       uses: actions/upload-artifact@v4
