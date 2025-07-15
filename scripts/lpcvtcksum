@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 #
 # Compute and insert the vector table checksum required for booting the
 # LPC43xx and some other NXP ARM microcontrollers.
@@ -22,30 +22,86 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this library.  If not, see <http://www.gnu.org/licenses/>.
 
-import sys, struct
+from sys import exit, argv
+from struct import unpack, pack, error
+from pathlib import Path
 
-binfile = open(sys.argv[1], 'r+b')
-rawvectors = binfile.read(32)
-vectors = list(struct.unpack('<IIIIIIII', rawvectors))
 
-# compute vector table checksum
-sum = 0
-for i in range(7):
-	sum += vectors[i]
-vectors[7] = 1 + (0xffffffff ^ (0xffffffff & sum))
+def main():
+    # Check command line arguments
+    if len(argv) != 2:
+        print("Usage: python lpcvtcksum firmware.bin")
+        print("")
+        print("Compute and insert the vector table checksum required for booting")
+        print("LPC43xx and some other NXP ARM microcontrollers.")
+        print("")
+        print("The script modifies the firmware.bin file in place, inserting the")
+        print("required checksum at offset 0x1C (7th vector table entry) and")
+        print("padding the file to a multiple of 4096 bytes.")
+        exit(1)
 
-print "computed vector table checksum: 0x%08x" % vectors[7]
+    # Check if the binary file exists
+    filename = argv[1]
+    file_path = Path(filename)
+    if not file_path.is_file():
+        print(f"Error: File '{filename}' not found.")
+        exit(1)
 
-rawremainder = binfile.read()
-remainder = list(struct.unpack('B' * len(rawremainder), rawremainder))
-numbytes = len(remainder) + 32
+    try:
+        binfile = file_path.open('r+b')
+        rawvectors = binfile.read(32)
 
-# pad to multiple of 4096 bytes to make GoodFET happy
-if (numbytes % 4096):
-	remainder.extend([0] * (4096 - numbytes % 4096))
+        # Check if file has enough data for vector table
+        if len(rawvectors) < 32:
+            print(f"Error: File '{filename}' is too small (needs at least 32 bytes for vector table).")
+            binfile.close()
+            exit(1)
 
-# rewrite file with checksum and padding
-data = vectors
-data.extend(remainder)
-binfile.seek(0)
-binfile.write(struct.pack('<IIIIIIII' + 'B' * len(remainder), *data))
+        vectors = list(unpack('<IIIIIIII', rawvectors))
+        
+    except IOError as e:
+        print(f"Error: Unable to open or read file '{filename}': {e}")
+        exit(1)
+        
+    except error as e:
+        print(f"Error: Invalid file format in '{filename}': {e}")
+        if 'binfile' in locals():
+            binfile.close()
+        exit(1)
+
+    # compute vector table checksum
+    checksum_sum = sum(vectors[:7])
+    vectors[7] = (1 + (0xffffffff ^ (0xffffffff & checksum_sum))) & 0xffffffff
+
+    print(f"computed vector table checksum: 0x{vectors[7]:08x}")
+
+    rawremainder = binfile.read()
+    remainder = list(unpack('B' * len(rawremainder), rawremainder))
+    numbytes = len(remainder) + 32
+
+    # pad to multiple of 4096 bytes to make GoodFET happy
+    if (numbytes % 4096):
+        remainder.extend([0] * (4096 - numbytes % 4096))
+
+    # rewrite file with checksum and padding
+    try:
+        data = vectors
+        data.extend(remainder)
+        binfile.seek(0)
+        binfile.write(pack('<IIIIIIII' + 'B' * len(remainder), *data))
+        binfile.close()
+        print(f"Successfully processed '{filename}'")
+        
+    except IOError as e:
+        print(f"Error: Unable to write to file '{filename}': {e}")
+        binfile.close()
+        exit(1)
+        
+    except error as e:
+        print(f"Error: Failed to pack data for '{filename}': {e}")
+        binfile.close()
+        exit(1)
+
+
+if __name__ == "__main__":
+    main()
