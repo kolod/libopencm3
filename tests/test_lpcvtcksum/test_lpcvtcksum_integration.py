@@ -14,7 +14,7 @@ from subprocess import run
 from pathlib import Path
 
 # Add the scripts directory to Python path to import lpcvtcksum functionality
-script_dir = Path(__file__).parent.parent / "scripts"
+script_dir = Path(__file__).parent.parent.parent / "scripts"
 path.insert(0, str(script_dir))
 
 class TestLpcVtcksumIntegration(TestCase):

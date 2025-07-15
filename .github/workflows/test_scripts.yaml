@@ -6,13 +6,13 @@ on:
     paths:
       - 'scripts/**'
       - 'tests/**'
-      - '.github/workflows/tests.yml'
+      - '.github/workflows/test_scripts.yaml'
   pull_request:
     branches: [ master, main ]
     paths:
       - 'scripts/**'
       - 'tests/**'
-      - '.github/workflows/tests.yml'
+      - '.github/workflows/test_scripts.yaml'
   workflow_dispatch:
 
 jobs:
@@ -25,6 +25,10 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
+      
+    - name: Configure Git safe directory  
+      shell: bash
+      run: git config --global --add safe.directory ${{ github.workspace }}
     
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v4
@@ -42,7 +46,7 @@ jobs:
     
     - name: Run script tests
       run: |
-        cd tests/test_lpcvtcksum
+        cd tests
         python run_all_tests.py
 
   test-script-compatibility:
@@ -55,6 +59,10 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
+      
+    - name: Configure Git safe directory
+      shell: bash  
+      run: git config --global --add safe.directory ${{ github.workspace }}
     
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v4
@@ -64,7 +72,7 @@ jobs:
     - name: Test lpcvtcksum cross-platform
       shell: bash
       run: |
-        cd tests/test_lpcvtcksum
+        cd tests
         python run_all_tests.py
         
         # Additional cross-platform verification
