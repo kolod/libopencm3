@@ -45,7 +45,7 @@
         "42": "ct16b1", 
         "43": "ct32b0", 
         "44": "ct32b1", 
-        "45": "ssp0", 
+        "45": "ssp", 
         "46": "uart", 
         "47": "usb", 
         "48": "usb_fiq", 
@@ -55,7 +55,7 @@
         "53": "pio3", 
         "54": "pio2", 
         "55": "pio1", 
-        "56": "ssp1"
+        "56": "pio0"
     }, 
     "partname_humanreadable": "LPC 13xx series", 
     "partname_doxygen": "LPC13xx", 
