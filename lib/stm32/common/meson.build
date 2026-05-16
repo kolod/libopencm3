@@ -39,6 +39,7 @@ libstm32_adc_v2_multi_sources = [
 	files('adc_common_v2_multi.c'),
 ]
 libstm32_adc_f47_sources = files('adc_common_f47.c')
+libstm32_cordic_v1_sources = files('cordic_common_v1.c')
 libstm32_crc_v1_sources = files('crc_common_all.c')
 libstm32_crc_v2_sources = [
 	libstm32_crc_v1_sources,
@@ -71,6 +72,10 @@ libstm32_dma2d_f47_sources = files('dma2d_common_f47.c')
 libstm32_dmamux_sources = files('dmamux.c')
 libstm32_dsi_f47_sources = files('dsi_common_f47.c')
 libstm32_exti_sources = files('exti_common_all.c')
+libstm32_exti_v2_sources = [
+	libstm32_exti_sources,
+	files('exti_common_v2.c'),
+]
 libstm32_fdcan_sources = files('fdcan_common.c')
 libstm32_flash_sources = files('flash_common_all.c')
 libstm32_flash_f_sources = [
@@ -84,6 +89,10 @@ libstm32_flash_f01_sources = [
 libstm32_flash_f24_sources = [
 	libstm32_flash_f_sources,
 	files('flash_common_f24.c'),
+]
+libstm32_flash_l01_sources = [
+	libstm32_flash_sources,
+	files('flash_common_l01.c'),
 ]
 libstm32_flash_idcache_sources = files('flash_common_idcache.c')
 libstm32_fmc_f47_sources = files('fmc_common_f47.c')

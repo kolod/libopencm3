@@ -1,7 +1,6 @@
 # This file is part of the libopencm3 project.
 #
-# Copyright (C) 2023-2025 1BitSquared <info@1bitsquared.com>
-# Written by Rachel Mant <git@dragonmux.network>
+# Copyright (C) 2026 1BitSquared <info@1bitsquared.com>
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -28,44 +27,14 @@
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-# Bring in all the common STM32 definitions
-subdir('common')
-
-# Sources specific to STM32 parts
-libstm32_can_sources = files('can.c')
-# Sources for the USB FS peripherals
-libstm32_usb_fs_v1_sources = files('st_usbfs_v1.c')
-libstm32_usb_fs_v2_sources = files('st_usbfs_v2.c')
-
-# Define a dependency for each generation of USB FS peripheral
-libstm32_usb_fs_v1 = declare_dependency(
-	sources: [libstm32_usb_fs_sources, libstm32_usb_fs_v1_sources]
+stm32f2_nvic_header = custom_target(
+	'nvic.h',
+	command: [irq2nvic, '@INPUT@'],
+	input: 'irq.json',
+	output: 'nvic.h',
+	install: false,
 )
 
-libstm32_usb_fs_v2 = declare_dependency(
-	sources: [libstm32_usb_fs_sources, libstm32_usb_fs_v2_sources]
+stm32f2_vector_nvic = declare_dependency(
+	sources: stm32f2_nvic_header,
 )
-
-# Mapping of target platform names to subdirs
-subdirs = {
-	'stm32f0': 'f0',
-	'stm32f1': 'f1',
-	'stm32f2': 'f2',
-	'stm32f3': 'f3',
-	'stm32f4': 'f4',
-	'stm32f7': 'f7',
-	'stm32g0': 'g0',
-	'stm32g4': 'g4',
-	'stm32h7': 'h7',
-	'stm32l0': 'l0',
-	'stm32l1': 'l1',
-	'stm32l4': 'l4',
-	'stm32u5': 'u5',
-}
-
-# Bring in the proper target subdir for the requested target platform
-foreach target_platform : target_platforms
-	if target_platform in subdirs
-		subdir(subdirs[target_platform])
-	endif
-endforeach

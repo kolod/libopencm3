@@ -1,7 +1,6 @@
 # This file is part of the libopencm3 project.
 #
-# Copyright (C) 2023-2025 1BitSquared <info@1bitsquared.com>
-# Written by Rachel Mant <git@dragonmux.network>
+# Copyright (C) 2026 1BitSquared <info@1bitsquared.com>
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -28,44 +27,67 @@
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-# Bring in all the common STM32 definitions
-subdir('common')
-
-# Sources specific to STM32 parts
-libstm32_can_sources = files('can.c')
-# Sources for the USB FS peripherals
-libstm32_usb_fs_v1_sources = files('st_usbfs_v1.c')
-libstm32_usb_fs_v2_sources = files('st_usbfs_v2.c')
-
-# Define a dependency for each generation of USB FS peripheral
-libstm32_usb_fs_v1 = declare_dependency(
-	sources: [libstm32_usb_fs_sources, libstm32_usb_fs_v1_sources]
+stm32l0_cm3 = declare_dependency(
+	sources: cm3_sources,
+	include_directories: cm3_includes,
+	dependencies: stm32l0_vector_nvic,
 )
 
-libstm32_usb_fs_v2 = declare_dependency(
-	sources: [libstm32_usb_fs_sources, libstm32_usb_fs_v2_sources]
+# Sources specific to the L0 series
+libstm32l0_sources = files(
+	'rcc.c',
 )
 
-# Mapping of target platform names to subdirs
-subdirs = {
-	'stm32f0': 'f0',
-	'stm32f1': 'f1',
-	'stm32f2': 'f2',
-	'stm32f3': 'f3',
-	'stm32f4': 'f4',
-	'stm32f7': 'f7',
-	'stm32g0': 'g0',
-	'stm32g4': 'g4',
-	'stm32h7': 'h7',
-	'stm32l0': 'l0',
-	'stm32l1': 'l1',
-	'stm32l4': 'l4',
-	'stm32u5': 'u5',
-}
+libstm32l0_compile_args = [
+	'-mcpu=cortex-m0plus',
+	'-mthumb',
+	'-DSTM32L0',
+]
 
-# Bring in the proper target subdir for the requested target platform
-foreach target_platform : target_platforms
-	if target_platform in subdirs
-		subdir(subdirs[target_platform])
-	endif
-endforeach
+# Build a static library for the target platform
+libstm32l0 = static_library(
+	'opencm3_stm32l0',
+	[
+		libstm32l0_sources,
+		libstm32_adc_v2_sources,
+		libstm32_crc_v2_sources,
+		libstm32_crs_sources,
+		libstm32_desig_v1_sources,
+		libstm32_dma_csel_sources,
+		libstm32_exti_sources,
+		libstm32_flash_l01_sources,
+		libstm32_gpio_f0234_sources,
+		libstm32_i2c_v2_sources,
+		libstm32_iwdg_sources,
+		libstm32_lptimer_sources,
+		libstm32_pwr_v1_sources,
+		libstm32_pwr_v2_sources,
+		libstm32_rcc_sources,
+		libstm32_rng_v1_sources,
+		libstm32_rtc_l1f024_sources,
+		libstm32_spi_v1_frf_sources,
+		libstm32_timer_sources,
+		libstm32_usart_v2_sources,
+	],
+	c_args: libstm32l0_compile_args,
+	include_directories: common_includes,
+	implicit_include_directories: false,
+	dependencies: [
+		stm32l0_cm3,
+		usb_common,
+		libstm32_usb_fs_v2,
+	],
+	pic: false,
+)
+
+# Make the dependency available to use
+libopencm3_stm32l0 = declare_dependency(
+	compile_args: libstm32l0_compile_args,
+	include_directories: common_includes,
+	link_with: libstm32l0,
+	link_args: [
+		f'-L@locm3_ld_script_path@',
+	],
+)
+
+meson.override_dependency('opencm3_stm32l0', libopencm3_stm32l0)
