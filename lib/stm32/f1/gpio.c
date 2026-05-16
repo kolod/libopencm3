@@ -92,7 +92,6 @@ open drain/push pull), for a set of GPIO pins on a given GPIO port.
 
 void gpio_set_mode(uint32_t gpioport, uint8_t mode, uint8_t cnf, uint16_t gpios)
 {
-	uint16_t i, offset = 0;
 	uint32_t crl = 0, crh = 0, tmp32 = 0;
 
 	/*
@@ -102,26 +101,22 @@ void gpio_set_mode(uint32_t gpioport, uint8_t mode, uint8_t cnf, uint16_t gpios)
 	crl = GPIO_CRL(gpioport);
 	crh = GPIO_CRH(gpioport);
 
-	/* Iterate over all bits, use i as the bitnumber. */
-	for (i = 0; i < 16; i++) {
+	/* Iterate over bits in gpios, abort when no set bits are left. */
+	for (uint16_t i = 0; gpios != 0; i++, gpios >>= 1) {
 		/* Only set the config if the bit is set in gpios. */
-		if (!((1 << i) & gpios)) {
-			continue;
+		if (!(gpios & 1)) continue;
+
+		if (i < 8) {
+			/* if current bit belongs to lower half of gpioport (bits 0..7) */
+			uint16_t shift = i * 4;                        /* Calculate bit offset. */
+			crl &= ~(0xf << shift);	                       /* Clear the bits first. */
+			crl |= (mode << shift) | (cnf << (shift + 2)); /* Set the bits. */
+		} else {
+			/* if current bit belongs to upper half of gpioport (bits 8..15) */
+			uint16_t shift = (i - 8) * 4;                  /* Calculate bit offset. */
+			crh &= ~(0xf << shift);	                       /* Clear the bits first. */
+			crh |= (mode << shift) | (cnf << (shift + 2)); /* Set the bits. */
 		}
-
-		/* Calculate bit offset. */
-		offset = (i < 8) ? (i * 4) : ((i - 8) * 4);
-
-		/* Use tmp32 to either modify crl or crh. */
-		tmp32 = (i < 8) ? crl : crh;
-
-		/* Modify bits are needed. */
-		tmp32 &= ~(0xf << offset);	/* Clear the bits first. */
-		tmp32 |= (mode << offset) | (cnf << (offset + 2));
-
-		/* Write tmp32 into crl or crh, leave the other unchanged. */
-		crl = (i < 8) ? tmp32 : crl;
-		crh = (i >= 8) ? tmp32 : crh;
 	}
 
 	GPIO_CRL(gpioport) = crl;
