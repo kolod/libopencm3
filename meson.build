@@ -114,6 +114,6 @@ irq2nvic = [
 ]
 
 # Extract what we're supposed to build for and start traversing to the appropriate library
-target_platform = get_option('target')
+target_platforms = get_option('target')
 subdir('include')
 subdir('lib')

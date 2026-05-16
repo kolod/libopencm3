@@ -42,11 +42,8 @@ target_paths = {
 	'lm4f': 'lm3s',
 }
 
-if target_platform != 'all'
-	target_path = target_paths.get(target_platform, target_platform)
-	subdir(f'libopencm3/@target_path@')
-else
-	foreach target_name, target_path : target_paths
+foreach target_name, target_path : target_paths
+	if target_name in target_platforms
 		subdir(f'libopencm3/@target_path@')
-	endforeach
-endif
+	endif
+endforeach

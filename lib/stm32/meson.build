@@ -59,10 +59,8 @@ subdirs = {
 }
 
 # Bring in the proper target subdir for the requested target platform
-if target_platform != 'all'
-	subdir(subdirs[target_platform])
-else
-	foreach subdir_name, subdir_path : subdirs
-		subdir(subdir_path)
-	endforeach
-endif
+foreach target_platform : target_platforms
+	if target_platform in subdirs
+		subdir(subdirs[target_platform])
+	endif
+endforeach
