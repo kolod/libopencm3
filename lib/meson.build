@@ -45,12 +45,20 @@ build_lpc43xx = false
 build_nrf = false
 build_efm32 = false
 build_msp432 = false
+build_sam = false
+build_vf6xx = false
+build_swm050 = false
+build_pac55xx = false
+build_lm3s = false
 foreach target_platform : target_platforms
 	if target_platform.startswith('stm32')
 		build_stm32 = true
 	endif
 	if target_platform == 'lm4f'
 		build_lm4f = true
+	endif
+	if target_platform == 'lm3s'
+		build_lm3s = true
 	endif
 	if target_platform == 'gd32f1x0'
 		build_gd32 = true
@@ -73,6 +81,18 @@ foreach target_platform : target_platforms
 	if target_platform == 'msp432e4'
 		build_msp432 = true
 	endif
+	if target_platform == 'sam3a' or target_platform == 'sam3n' or target_platform == 'sam3s' or target_platform == 'sam3u' or target_platform == 'sam3x' or target_platform == 'sam4l' or target_platform == 'samd'
+		build_sam = true
+	endif
+	if target_platform == 'vf6xx'
+		build_vf6xx = true
+	endif
+	if target_platform == 'swm050'
+		build_swm050 = true
+	endif
+	if target_platform == 'pac55xx'
+		build_pac55xx = true
+	endif
 endforeach
 
 if build_stm32
@@ -80,6 +100,9 @@ if build_stm32
 endif
 if build_lm4f
 	subdir('lm4f')
+endif
+if build_lm3s
+	subdir('lm3s')
 endif
 if build_gd32
 	subdir('gd32')
@@ -101,4 +124,16 @@ if build_efm32
 endif
 if build_msp432
 	subdir('msp432')
+endif
+if build_sam
+	subdir('sam')
+endif
+if build_vf6xx
+	subdir('vf6xx')
+endif
+if build_swm050
+	subdir('swm050')
+endif
+if build_pac55xx
+	subdir('pac55xx')
 endif
