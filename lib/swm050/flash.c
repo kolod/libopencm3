@@ -25,13 +25,17 @@
  */
 /**@{*/
 #include <libopencm3/swm050/flash.h>
+#include <stdint.h>
 
 /* Internal function pointers to the ROM flash API */
-#define IAP_WR	(void *)(0x1000AB)
-#define IAP_E	(void *)(0x100127)
+typedef uint32_t (*iap_write_read_fn_t)(uint32_t *, uint32_t *, uint8_t, uint8_t);
+typedef uint32_t (*iap_erase_fn_t)(void);
 
-uint32_t (*iap_write_read)(uint32_t *, uint32_t *, uint8_t, uint8_t) = IAP_WR;
-uint32_t (*iap_erase)(void) = IAP_E;
+#define IAP_WR_ADDR	((uintptr_t)0x1000ABU)
+#define IAP_E_ADDR	((uintptr_t)0x100127U)
+
+iap_write_read_fn_t iap_write_read = (iap_write_read_fn_t)IAP_WR_ADDR;
+iap_erase_fn_t iap_erase = (iap_erase_fn_t)IAP_E_ADDR;
 
 /*---------------------------------------------------------------------------*/
 /** @brief Write to the user flash
