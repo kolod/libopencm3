@@ -48,8 +48,6 @@
  *  and move that to there specific driver files.
  * maybe a pointer to driver specific data will do the task. */
 
-#define ENDPOINT_COUNT 4
-
 static struct _usbd_device _usbd_dev;
 
 /** Initialize the USB_FS device controller hardware of the STM32. */
@@ -163,7 +161,7 @@ static void efm32lg_ep_setup(usbd_device *usbd_dev, uint8_t addr, uint8_t type,
 
 		if (callback) {
 			usbd_dev->user_callback_ctr[addr][USB_TRANSACTION_IN] =
-			    (void *)callback;
+			    callback;
 		}
 	}
 
@@ -177,7 +175,7 @@ static void efm32lg_ep_setup(usbd_device *usbd_dev, uint8_t addr, uint8_t type,
 
 		if (callback) {
 			usbd_dev->user_callback_ctr[addr][USB_TRANSACTION_OUT] =
-			    (void *)callback;
+			    callback;
 		}
 	}
 }
@@ -309,7 +307,7 @@ static void efm32lg_poll(usbd_device *usbd_dev)
 {
 	/* Read interrupt status register. */
 	uint32_t intsts = USB_GINTSTS;
-	int i;
+	uint16_t i;
 
 	if (intsts & USB_GINTSTS_ENUMDNE) {
 		/* Handle USB RESET condition. */

@@ -47,8 +47,6 @@
 /* FIXME: EFM32HG has 6 bidirectional endpoints.
  *  problem is "uint32_t doeptsiz[4];" in usb_private.h */
 
-#define ENDPOINT_COUNT 4
-
 static struct _usbd_device _usbd_dev;
 
 /** Initialize the USB device controller hardware of the EFM32HG. */
