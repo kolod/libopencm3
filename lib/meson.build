@@ -38,12 +38,40 @@ locm3_ld_script_path = meson.current_source_dir()
 # Now take the platform target and map it to a suitable target family
 build_stm32 = false
 build_lm4f = false
+build_gd32 = false
+build_lpc13xx = false
+build_lpc17xx = false
+build_lpc43xx = false
+build_nrf = false
+build_efm32 = false
+build_msp432 = false
 foreach target_platform : target_platforms
 	if target_platform.startswith('stm32')
 		build_stm32 = true
 	endif
 	if target_platform == 'lm4f'
 		build_lm4f = true
+	endif
+	if target_platform == 'gd32f1x0'
+		build_gd32 = true
+	endif
+	if target_platform == 'lpc13xx'
+		build_lpc13xx = true
+	endif
+	if target_platform == 'lpc17xx'
+		build_lpc17xx = true
+	endif
+	if target_platform == 'lpc43xxm4' or target_platform == 'lpc43xxm0'
+		build_lpc43xx = true
+	endif
+	if target_platform == 'nrf51' or target_platform == 'nrf52'
+		build_nrf = true
+	endif
+	if target_platform == 'efm32tg' or target_platform == 'efm32g' or target_platform == 'efm32lg' or target_platform == 'efm32gg' or target_platform == 'efm32hg' or target_platform == 'efm32wg' or target_platform == 'ezr32wg'
+		build_efm32 = true
+	endif
+	if target_platform == 'msp432e4'
+		build_msp432 = true
 	endif
 endforeach
 
@@ -52,4 +80,25 @@ if build_stm32
 endif
 if build_lm4f
 	subdir('lm4f')
+endif
+if build_gd32
+	subdir('gd32')
+endif
+if build_lpc13xx
+	subdir('lpc13xx')
+endif
+if build_lpc17xx
+	subdir('lpc17xx')
+endif
+if build_lpc43xx
+	subdir('lpc43xx')
+endif
+if build_nrf
+	subdir('nrf')
+endif
+if build_efm32
+	subdir('efm32')
+endif
+if build_msp432
+	subdir('msp432')
 endif
