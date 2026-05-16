@@ -71,9 +71,12 @@
 #elif defined(SAMD)
 #	include <libopencm3/sam/d/nvic.h>
 
-#elif defined(LM3S) || defined(LM4F)
-/* Yes, we use the same interrupt table for both LM3S and LM4F */
+#elif defined(LM3S)
 #	include <libopencm3/lm3s/nvic.h>
+
+#elif defined(LM4F)
+/* LM4F currently shares IRQ layout with LM3S but has a dedicated generated path. */
+#	include <libopencm3/lm4f/nvic.h>
 
 #elif defined(MSP432E4)
 #   include <libopencm3/msp432/e4/nvic.h>

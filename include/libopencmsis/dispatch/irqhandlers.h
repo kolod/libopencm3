@@ -61,9 +61,12 @@
 #elif defined(SAMD)
 #       include <libopencmsis/sam/d/irqhandlers.h>
 
-#elif defined(LM3S) || defined(LM4F)
-/* Yes, we use the same interrupt table for both LM3S and LM4F */
+#elif defined(LM3S)
 #	include <libopencmsis/lm3s/irqhandlers.h>
+
+#elif defined(LM4F)
+/* LM4F currently shares IRQ layout with LM3S but has a dedicated generated path. */
+#	include <libopencmsis/lm4f/irqhandlers.h>
 
 #elif defined(SWM050)
 #	include <libopencmsis/swm050/irqhandlers.h>

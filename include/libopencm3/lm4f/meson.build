@@ -1,6 +1,6 @@
 # This file is part of the libopencm3 project.
 #
-# Copyright (C) 2023 1BitSquared <info@1bitsquared.com>
+# Copyright (C) 2023-2025 1BitSquared <info@1bitsquared.com>
 # Written by Rachel Mant <git@dragonmux.network>
 #
 # Redistribution and use in source and binary forms, with or without
@@ -28,51 +28,19 @@
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-lm4f_cm3 = declare_dependency(
-	sources: cm3_sources,
-	dependencies: lm4f_vector_nvic,
+lm4f_nvic_header = custom_target(
+	'nvic.h',
+	command: [irq2nvic, '@INPUT@'],
+	input: 'irq.json',
+	# We only name one of the 3 output files due to how this all works.
+	# This script will write:
+	# - include/libopencm3/lm4f/nvic.h
+	# - lib/lm4f/vector_nvic.c
+	# - include/libopencmsis/lm4f/irqhandlers.h
+	output: 'nvic.h',
+	install: false,
 )
 
-# Sources specific to the LM4F (Tiva-C) series
-liblm4f_sources = files(
-	'gpio.c',
-	'rcc.c',
-	'systemcontrol.c',
-	'uart.c',
+lm4f_vector_nvic = declare_dependency(
+	sources: lm4f_nvic_header,
 )
-
-liblm4f_compile_args = [
-	'-mfloat-abi=hard',
-	'-mfpu=fpv4-sp-d16',
-	'-mcpu=cortex-m4',
-	'-mthumb',
-	'-DLM4F',
-]
-
-# Build a static library for the target platform
-liblm4f = static_library(
-	'opencm3_lm4f',
-	[
-		liblm4f_sources,
-		usb_lm4f_sources,
-	],
-	c_args: liblm4f_compile_args,
-	include_directories: common_includes,
-	dependencies: [
-		lm4f_cm3,
-		usb_common,
-	],
-	pic: false,
-)
-
-# Make the dependency available to use
-libopencm3_lm4f = declare_dependency(
-	compile_args: liblm4f_compile_args,
-	include_directories: common_includes,
-	link_with: liblm4f,
-	link_args: [
-		f'-L@locm3_ld_script_path@',
-	],
-)
-
-meson.override_dependency('opencm3_lm4f', libopencm3_lm4f)

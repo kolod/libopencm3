@@ -59,11 +59,26 @@ target_paths = {
 	'efm32wg': 'efm32/wg',
 	'ezr32wg': 'efm32/ezr32wg',
 	'msp432e4': 'msp432/e4',
-	'lm4f': 'lm3s',
+	'sam3a': 'sam/3a',
+	'sam3n': 'sam/3n',
+	'sam3s': 'sam/3s',
+	'sam3u': 'sam/3u',
+	'sam3x': 'sam/3x',
+	'sam4l': 'sam/4l',
+	'samd': 'sam/d',
+	'vf6xx': 'vf6xx',
+	'swm050': 'swm050',
+	'pac55xx': 'pac55xx',
+	'lm3s': 'lm3s',
+	'lm4f': 'lm4f',
 }
 
+visited_target_paths = []
 foreach target_name, target_path : target_paths
 	if target_name in target_platforms
-		subdir(f'libopencm3/@target_path@')
+		if target_path not in visited_target_paths
+			subdir(f'libopencm3/@target_path@')
+			visited_target_paths += [target_path]
+		endif
 	endif
 endforeach

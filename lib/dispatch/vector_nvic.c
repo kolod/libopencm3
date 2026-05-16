@@ -79,9 +79,12 @@
 #       include "../pac55xx/vector_nvic.c"
 
 
-#elif defined(LM3S) || defined(LM4F)
-/* Yes, we use the same interrupt table for both LM3S and LM4F */
+#elif defined(LM3S)
 #	include "../lm3s/vector_nvic.c"
+
+#elif defined(LM4F)
+/* LM4F currently shares IRQ layout with LM3S but has a dedicated generated path. */
+#	include "../lm4f/vector_nvic.c"
 
 #elif defined(MSP432E4)
 #       include "../msp432/e4/vector_nvic.c"
